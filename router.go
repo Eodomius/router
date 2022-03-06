@@ -1,5 +1,5 @@
 package router
 
-func TestAdd(a int, b int) int {
+func TestAddTwo(a int, b int) int {
   return a + b;
 }
