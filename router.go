@@ -9,7 +9,7 @@ type Router struct {
 	routes map[string]func(w http.ResponseWriter, r *http.Request)
 }
 
-func New()Router{
+func New() Router {
 	return Router{
 		routes: make(map[string]func(w http.ResponseWriter, r *http.Request)),
 	}
