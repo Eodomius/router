@@ -15,7 +15,7 @@ go get github.com/eodomus/router
 You can create a new router with the `New` function :
 
 ```go
-  var router = router.New()
+var router = router.New()
 ```
 
 ### Handle a request
@@ -55,6 +55,6 @@ Result is a structure that contains parameters.
 
 ```go
 type Result struct {
-  Params map[string]string
+  Params map[string]string // [paramName]paramValue
 }
 ```
