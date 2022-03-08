@@ -88,6 +88,8 @@ func (ro Router) HandleRoute(path, method string, cb func(w http.ResponseWriter,
 	route.ParamsNames = paramsNames
 	// Replace {paramName} by ([^/]+)
 	var replacedRoute = ro.paramsRegex.ReplaceAllString(path, `([^/]+)`)
+	// Add ^ and $ to the route
+	replacedRoute = "^" + replacedRoute + "$";
 	route.PathRegex = regexp.MustCompile(replacedRoute)
 	ro.routes[method + ": " + path] = route
 	fmt.Println(method + ": " + route.Path)
