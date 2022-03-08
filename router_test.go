@@ -11,9 +11,13 @@ func TestRouter(t *testing.T){
 
 	var router = New()
 	http.Handle("/", router)
-	router.Get("/test/{a}/{id}/{other}", func(w http.ResponseWriter, r *http.Request, route Route) {
-		w.Write([]byte("Get : Test Regex"))
+	router.Get("/test/{a}/One/{other}", func(w http.ResponseWriter, r *http.Request, route *Result) {
+		w.Write([]byte("Get : Test Regex 1"))
 	})
+	router.Get("/test/{a}/{b}/{c}", func(w http.ResponseWriter, r *http.Request, result *Result) {
+		w.Write([]byte("Get : Test Regex 2\nParams : " + result.Params["{a}"] + " " + result.Params["{b}"] + " " + result.Params["{c}"]))
+	})
+	
 	// router.Get("/test/{id}", func(w http.ResponseWriter, r *http.Request){
 	// 	w.Write([]byte("Get : Test ID"))
 	// })

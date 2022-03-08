@@ -5,17 +5,20 @@ import (
 	"net/http"
 	"regexp"
 )
+
 type Route struct {
 	Method string
 	Path string
 	PathRegex *regexp.Regexp
-	Params map[string]string
 	ParamsNames []string
-	Execute func(w http.ResponseWriter, r *http.Request, route Route)
+	Execute func(w http.ResponseWriter, r *http.Request, route *Result)
 }
 type Router struct {
 	routes map[string]Route
 	paramsRegex *regexp.Regexp
+}
+type Result struct {
+		Params map[string]string
 }
 
 func New() Router {
@@ -49,31 +52,31 @@ func resolveRoute(ro Router, r *http.Request) (Route, bool) {
 * @param {http.Request} req - The request
 * @return {[]string} - The params
 */
-func resolveParams(route *Route, req *http.Request) {
+func resolveParams(route *Route, req *http.Request, result *Result) {
 		params := route.PathRegex.FindStringSubmatch(req.URL.Path)
 		params = params[1:]
 		for i, param := range params {
-			route.Params[route.ParamsNames[i]] = param
+			result.Params[route.ParamsNames[i]] = param
 		}
 }
 func (ro Router) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-
 		route, exist := resolveRoute(ro, req)
 		if !exist {
 			return
 		}
-		resolveParams(&route, req)
-		route.Execute(res, req, route)
+		var result = Result{
+			Params: make(map[string]string),
+		}
+		resolveParams(&route, req, &result)
+		route.Execute(res, req, &result)
 }
 
-/* Methods functions */
 
-func (ro Router) handle(path, method string, cb func(w http.ResponseWriter, r *http.Request, route Route)){
+func (ro Router) HandleRoute(path, method string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
 	route := Route{
 		Path: path,
 		Method: method,
 		Execute: cb,
-		Params: make(map[string]string),
 		ParamsNames: []string{},
 	}
 	// Get params names
@@ -86,27 +89,29 @@ func (ro Router) handle(path, method string, cb func(w http.ResponseWriter, r *h
 	fmt.Println(method + ": " + route.Path)
 }
 
+/* Methods handlers */
+
 // GET
-func (ro Router) Get(path string, cb func(w http.ResponseWriter, r *http.Request, route Route)){
-	ro.handle(path, "GET", cb)
+func (ro Router) Get(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "GET", cb)
 }
 
 // POST
-func (ro Router) Post(path string, cb func(w http.ResponseWriter, r *http.Request, route Route)){
-	ro.handle(path, "POST", cb)
+func (ro Router) Post(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "POST", cb)
 }
 
 // PATCH
-func (ro Router) Patch(path string, cb func(w http.ResponseWriter, r *http.Request, route Route)){
-	ro.handle(path, "PATCH", cb)
+func (ro Router) Patch(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "PATCH", cb)
 }
 
 // PUT
-func (ro Router) Put(path string, cb func(w http.ResponseWriter, r *http.Request, route Route)){
-	ro.handle(path, "PUT", cb)
+func (ro Router) Put(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "PUT", cb)
 }
 
 // DELETE
-func (ro Router) Delete(path string, cb func(w http.ResponseWriter, r *http.Request, route Route)){
-	ro.handle(path, "DELETE", cb)
+func (ro Router) Delete(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "DELETE", cb)
 }
