@@ -27,7 +27,7 @@ You can handle a request with the `Get`, `Post`, `Patch`, `Put`, and `Delete` fu
 - Second parameter is the function to call when the request is received
   - First parameter is the responce
   - Second parameter is the request
-  - Third parameter is [Result](#result) structure
+  - Third parameter is a [Result](#result) structure
 
 ```go
   router.Get("/test/{id}", func(w http.ResponseWriter, r *http.Request, result *Result){
