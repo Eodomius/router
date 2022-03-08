@@ -81,6 +81,10 @@ func (ro Router) HandleRoute(path, method string, cb func(w http.ResponseWriter,
 	}
 	// Get params names
 	paramsNames := ro.paramsRegex.FindAllString(path, -1)
+	// Remove "{" and "}" from params names
+	for i, paramName := range paramsNames {
+		paramsNames[i] = regexp.MustCompile("{|}").ReplaceAllString(paramName, "")
+	}
 	route.ParamsNames = paramsNames
 	// Replace {paramName} by ([^/]+)
 	var replacedRoute = ro.paramsRegex.ReplaceAllString(path, `([^/]+)`)
