@@ -29,7 +29,7 @@ func New() Router {
 }
 
 /**
-* Resolve routes
+* Resolve routes when a request is received
 * @param {Router} Router - The router
 * @param {http.Request} req - The request
 * @return {Route} - The route
@@ -55,7 +55,11 @@ func resolveRoute(ro Router, r *http.Request) (Route, bool) {
 func resolveParams(route *Route, req *http.Request, result *Result) {
 		params := route.PathRegex.FindStringSubmatch(req.URL.Path)
 		params = params[1:]
+		var paramsNumber = len(route.ParamsNames)
 		for i, param := range params {
+			if i > (paramsNumber-1) {
+				break
+			}
 			result.Params[route.ParamsNames[i]] = param
 		}
 }
