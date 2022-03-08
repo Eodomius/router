@@ -31,7 +31,7 @@ You can handle a request with the `Get`, `Post`, `Patch`, `Put`, and `Delete` fu
 
 ```go
   router.Get("/test/{id}", func(w http.ResponseWriter, r *http.Request, result *Result){
-    w.Write([]byte("Get : Test ID : " + result.Params["{id}"]))
+    w.Write([]byte("Get : Test ID : " + result.Params["id"]))
   })
   router.Post("/test", func(w http.ResponseWriter, r *http.Request, result *Result){
     w.Write([]byte("Post : Test"))
