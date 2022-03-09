@@ -6,20 +6,7 @@ import (
 	"regexp"
 )
 
-type Route struct {
-	Method string
-	Path string
-	PathRegex *regexp.Regexp
-	ParamsNames []string
-	Execute func(w http.ResponseWriter, r *http.Request, route *Result)
-}
-type Router struct {
-	routes map[string]Route
-	paramsRegex *regexp.Regexp
-}
-type Result struct {
-		Params map[string]string
-}
+
 
 func New() Router {
 	return Router{
@@ -28,42 +15,9 @@ func New() Router {
 	}
 }
 
-/**
-* Resolve routes when a request is received
-* @param {Router} Router - The router
-* @param {http.Request} req - The request
-* @return {Route} - The route
-* @return {bool} - If the route exist
-*/
-func resolveRoute(ro Router, r *http.Request) (Route, bool) {
-	for _, route := range ro.routes {
-			if route.Method == r.Method {
-				if route.PathRegex.MatchString(r.URL.Path) {
-					return route , true
-				}
-			}
-		}
-		return Route{}, false
-}
 
-/**
-* Resolve routes and update Route.Params
-* @param {*Route} Route - The route called
-* @param {http.Request} req - The request
-* @return {[]string} - The params
-*/
-func resolveParams(route *Route, req *http.Request, result *Result) {
-		params := route.PathRegex.FindStringSubmatch(req.URL.Path)
-		params = params[1:]
-		var paramsNumber = len(route.ParamsNames)
-		for i, param := range params {
-			if i > (paramsNumber-1) {
-				break
-			}
-			result.Params[route.ParamsNames[i]] = param
-		}
-}
 func (ro Router) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	req.URL.Path = normalizePath(req.URL.Path)
 		route, exist := resolveRoute(ro, req)
 		if !exist {
 			return
@@ -83,23 +37,21 @@ func (ro Router) HandleRoute(path, method string, cb func(w http.ResponseWriter,
 		Execute: cb,
 		ParamsNames: []string{},
 	}
-	// Get params names
 	paramsNames := ro.paramsRegex.FindAllString(path, -1)
-	// Remove "{" and "}" from params names
 	for i, paramName := range paramsNames {
 		paramsNames[i] = regexp.MustCompile("{|}").ReplaceAllString(paramName, "")
 	}
 	route.ParamsNames = paramsNames
-	// Replace {paramName} by ([^/]+)
 	var replacedRoute = ro.paramsRegex.ReplaceAllString(path, `([^/]+)`)
-	// Add ^ and $ to the route
 	replacedRoute = "^" + replacedRoute + "$";
 	route.PathRegex = regexp.MustCompile(replacedRoute)
 	ro.routes[method + ": " + path] = route
 	fmt.Println(method + ": " + route.Path)
 }
 
-/* Methods handlers */
+
+
+/****************** Methods handlers ******************/
 
 // GET
 func (ro Router) Get(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
