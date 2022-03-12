@@ -41,6 +41,7 @@ func StartServer(t *testing.T){
 func TestRequests(t *testing.T){
 	go StartServer(t);
 	TRequest(t, "http://localhost:"+PORT+"/test", "GET", "Get 0")
+	TRequest(t, "http://localhost:"+PORT+"/test/", "GET", "Get 0")
 	TRequest(t, "http://localhost:"+PORT+"/test/abc", "GET", "Get 1: abc")
 	TRequest(t, "http://localhost:"+PORT+"/test/def/test", "GET", "Get 2: def")
 	TRequest(t, "http://localhost:"+PORT+"/test", "POST", "Post: Test")
