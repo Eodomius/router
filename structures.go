@@ -15,6 +15,7 @@ type Route struct {
 }
 type Router struct {
 	routes map[string]Route
+	middlewares []func(w http.ResponseWriter, r *http.Request)
 	paramsRegex *regexp.Regexp
 }
 type Result struct {

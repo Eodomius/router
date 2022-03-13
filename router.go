@@ -8,9 +8,10 @@ import (
 
 
 
-func New() Router {
-	return Router{
+func New() *Router {
+	return &Router{
 		routes: make(map[string]Route),
+		middlewares: make([]func(w http.ResponseWriter, r *http.Request), 0),
 		paramsRegex: regexp.MustCompile(`({[^/]+})`),
 	}
 }
@@ -22,10 +23,14 @@ func (ro Router) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		if !exist {
 			return
 		}
+		
 		var result = Result{
 			Params: make(map[string]string),
 		}
 		resolveParams(&route, req, &result)
+		for _, middleware := range ro.middlewares {
+			middleware(res, req)
+		}
 		route.Execute(res, req, &result)
 }
 
@@ -52,6 +57,11 @@ func (ro Router) HandleRoute(path, method string, cb func(w http.ResponseWriter,
 
 
 /****************** Methods handlers ******************/
+
+// Add middleware
+func (ro *Router) Use(middleware func(w http.ResponseWriter, r *http.Request)){
+	ro.middlewares = append(ro.middlewares, middleware)
+}
 
 // GET
 func (ro Router) Get(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){

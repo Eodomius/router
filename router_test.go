@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -12,7 +13,10 @@ func StartServer(t *testing.T){
 
 	var router = New()
 	http.Handle("/", router)
-	
+
+	router.Use(func (w http.ResponseWriter, req *http.Request){
+		fmt.Println("Middleware")
+	})
 	router.Get("/test", func(w http.ResponseWriter, r *http.Request, result *Result){
 		w.Write([]byte("Get 0"))
 	})
@@ -34,6 +38,7 @@ func StartServer(t *testing.T){
 	router.Delete("/test", func(w http.ResponseWriter, r *http.Request, result *Result){
 		w.Write([]byte("Delete: Test"))
 	})
+
 	http.ListenAndServe("127.0.0.1:"+PORT, nil)
 }
 
