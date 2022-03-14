@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sync"
@@ -16,6 +17,7 @@ func StartServer(t *testing.T){
 	http.Handle("/", router)
 
 	router.Use(func (w http.ResponseWriter, req *http.Request){
+		fmt.Println("Middleware 1")
 		time.Sleep(time.Second * 2)
 	})
 	router.Get("/test", func(w http.ResponseWriter, r *http.Request, result *Result){
