@@ -5,7 +5,7 @@ A simple router written in Go for APIs and servers of Eodomius projects
 ## Installation
 
 ```bash
-go get github.com/eodomus/router
+go get github.com/eodomius/router
 ```
 
 ## Usage
