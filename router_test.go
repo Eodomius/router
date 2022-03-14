@@ -1,10 +1,11 @@
 package router
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
 	"testing"
+	"time"
 )
 
 const PORT = "8080"
@@ -15,7 +16,7 @@ func StartServer(t *testing.T){
 	http.Handle("/", router)
 
 	router.Use(func (w http.ResponseWriter, req *http.Request){
-		fmt.Println("Middleware")
+		time.Sleep(time.Second * 2)
 	})
 	router.Get("/test", func(w http.ResponseWriter, r *http.Request, result *Result){
 		w.Write([]byte("Get 0"))
@@ -41,21 +42,24 @@ func StartServer(t *testing.T){
 
 	http.ListenAndServe("127.0.0.1:"+PORT, nil)
 }
-
+var wg  sync.WaitGroup
 // Test requests for the router
 func TestRequests(t *testing.T){
 	go StartServer(t);
-	TRequest(t, "http://localhost:"+PORT+"/test", "GET", "Get 0")
-	TRequest(t, "http://localhost:"+PORT+"/test/", "GET", "Get 0")
-	TRequest(t, "http://localhost:"+PORT+"/test/abc", "GET", "Get 1: abc")
-	TRequest(t, "http://localhost:"+PORT+"/test/def/test", "GET", "Get 2: def")
-	TRequest(t, "http://localhost:"+PORT+"/test", "POST", "Post: Test")
-	TRequest(t, "http://localhost:"+PORT+"/test", "PATCH", "Patch: Test")
-	TRequest(t, "http://localhost:"+PORT+"/test", "PUT", "Put: Test")
-	TRequest(t, "http://localhost:"+PORT+"/test", "DELETE", "Delete: Test")
+	go TRequest(t, "http://localhost:"+PORT+"/test", "GET", "Get 0")
+	go TRequest(t, "http://localhost:"+PORT+"/test/", "GET", "Get 0")
+	go TRequest(t, "http://localhost:"+PORT+"/test/abc", "GET", "Get 1: abc")
+	go TRequest(t, "http://localhost:"+PORT+"/test/def/test", "GET", "Get 2: def")
+	go TRequest(t, "http://localhost:"+PORT+"/test", "POST", "Post: Test")
+	go TRequest(t, "http://localhost:"+PORT+"/test", "PATCH", "Patch: Test")
+	go TRequest(t, "http://localhost:"+PORT+"/test", "PUT", "Put: Test")
+	go TRequest(t, "http://localhost:"+PORT+"/test", "DELETE", "Delete: Test")
+	wg.Add(8)
+	wg.Wait()
 }
 
 func TRequest(t *testing.T, url, method, exeptedResult string){
+	defer wg.Done()
 	client := &http.Client{}
 	var (
 		request *http.Request

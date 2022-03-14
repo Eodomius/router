@@ -47,6 +47,20 @@ You can handle a request with the `Get`, `Post`, `Patch`, `Put`, and `Delete` fu
   })
 ```
 
+### Middleware
+
+You can add middleware to the router with the `Use` function :
+
+- This function takes a function as parameter :
+  - First parameter is the responce
+  - Second parameter is the request
+
+```go
+router.Use(func(w http.ResponseWriter, r *http.Request){
+  w.Write([]byte("Middleware"))
+})
+```
+
 ## Typedef
 
 ### Result
