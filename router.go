@@ -35,6 +35,7 @@ func (ro Router) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 }
 
 
+/* It's a method that adds a route to the router. */
 func (ro Router) HandleRoute(path, method string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
 	route := Route{
 		Path: path,
