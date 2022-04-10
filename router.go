@@ -74,6 +74,21 @@ func (ro Router) Head(path string, cb func(w http.ResponseWriter, r *http.Reques
 	ro.HandleRoute(path, "HEAD", cb)
 }
 
+// CONNECT
+func (ro Router) Connect(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "CONNECT", cb)
+}
+
+// TRACE
+func (ro Router) Trace(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "TRACE", cb)
+}
+
+// OPTIONS
+func (ro Router) Options(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "OPTIONS", cb)
+}
+
 // POST
 func (ro Router) Post(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
 	ro.HandleRoute(path, "POST", cb)
