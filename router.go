@@ -69,6 +69,11 @@ func (ro Router) Get(path string, cb func(w http.ResponseWriter, r *http.Request
 	ro.HandleRoute(path, "GET", cb)
 }
 
+// HEAD
+func (ro Router) Head(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
+	ro.HandleRoute(path, "HEAD", cb)
+}
+
 // POST
 func (ro Router) Post(path string, cb func(w http.ResponseWriter, r *http.Request, route *Result)){
 	ro.HandleRoute(path, "POST", cb)
