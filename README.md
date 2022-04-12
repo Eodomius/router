@@ -20,7 +20,7 @@ var router = router.New()
 
 ### Handle a request
 
-You can handle a request with the `Get`, `Post`, `Patch`, `Put`, and `Delete` functions :
+You can handle a request with the [supported methods]() :
 
 - First parameter is the path of the request
 
@@ -60,6 +60,19 @@ router.Use(func(w http.ResponseWriter, r *http.Request){
   w.Write([]byte("Middleware"))
 })
 ```
+
+## Supported methods
+
+- `Get` : handle GET method
+- `Head` : handle HEAD method
+- `Connect` : handle CONNECT method
+- `Trace` : handle TRACE method
+- `Options` : handle OPTIONS method
+- `Connect` : handle CONNECT method
+- `Post` : handle POST method
+- `Patch` : handle PATCH method
+- `Put` : handle PUT method
+- `Delete` : handle DELETE method
 
 ## Typedef
 
