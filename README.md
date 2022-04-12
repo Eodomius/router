@@ -20,7 +20,7 @@ var router = router.New()
 
 ### Handle a request
 
-You can handle a request with the [supported methods]() :
+You can handle a request with the [supported methods](#supported-methods) :
 
 - First parameter is the path of the request
 
