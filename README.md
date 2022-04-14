@@ -49,7 +49,7 @@ You can handle a request with the [supported methods](#supported-methods) :
 
 ### Middleware
 
-You can add middleware to the router with the `Use` function :
+You can add a middleware to the router with the `Use` function :
 
 - This function takes a function as parameter :
   - First parameter is the responce
