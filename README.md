@@ -68,7 +68,6 @@ router.Use(func(w http.ResponseWriter, r *http.Request){
 - `Connect` : handle CONNECT method
 - `Trace` : handle TRACE method
 - `Options` : handle OPTIONS method
-- `Connect` : handle CONNECT method
 - `Post` : handle POST method
 - `Patch` : handle PATCH method
 - `Put` : handle PUT method
